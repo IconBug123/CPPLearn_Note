@@ -1,3 +1,27 @@
 2025 April 10
 
 ①
+命名空间定义: namespace SpaceA{......}  作用域 防止函数，变量，类的名字冲突
+
+使用：1 SpaceA:: 函数或变量；
+	  2 多个空间嵌套namespace A{namespace B{......} ......}   A::B::B里的内容;    C++17里可以namespace A::B{......}
+	  3 匿名空间namespace{......}  只能在所在文件里使用里面的内容, 如同static
+	  4 命名空间里函数或是变量只是声明，可以在外部定义<data_type> SpaceA:: fun(arguments){......}
+	  
+// mylib.h
+namespace mylib {
+    void publicFunction();  //函数声明
+}
+
+// mylib.cpp
+namespace {
+    void internalHelper() {
+        // 私有
+    }
+}
+
+void mylib::publicFunction() {
+    internalHelper();
+}
+
+	
