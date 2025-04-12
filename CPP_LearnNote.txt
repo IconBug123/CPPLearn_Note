@@ -1,27 +1,38 @@
-2025 April 10
+025 April 10
 
 ①
-命名空间定义: namespace SpaceA{......}  作用域 防止函数，变量，类的名字冲突
+(1) 命名空间定义: namespace SpaceA{......}  作用域 (防止函数，变量，类的名字冲突)
+    使用：SpaceA::函数或变量；
+        
+        多个空间嵌套namespace A{namespace B{......} ......}   A::B::member_B;    
+	C++17里可以namespace A::B{......}
+        
+	匿名空间namespace{......}  只能在所在区域使用里面的内容, 如同static
+        命名空间里函数或是变量如果是声明，可以在外部定义<data_type> SpaceA:: fun(arguments){......}
+	可以结合匿名空间一起使用，内部程序不暴露，只暴露接口	  
 
-使用：1 SpaceA:: 函数或变量；
-	  2 多个空间嵌套namespace A{namespace B{......} ......}   A::B::B里的内容;    C++17里可以namespace A::B{......}
-	  3 匿名空间namespace{......}  只能在所在文件里使用里面的内容, 如同static
-	  4 命名空间里函数或是变量只是声明，可以在外部定义<data_type> SpaceA:: fun(arguments){......}
-	  
 // mylib.h
 namespace mylib {
     void publicFunction();  //函数声明
 }
-
 // mylib.cpp
 namespace {
-    void internalHelper() {
-        // 私有
-    }
+    void internalHelper() {// 私有}
 }
+void mylib::publicFunction(){internalHelper();}
+或: namespace mylib{void publicFunction(){internalHelper();}}
 
-void mylib::publicFunction() {
-    internalHelper();
-}
+
+(2) using的使用:
+	(a) 引入名称(函数名，变量名，空间类名)到所在作用域
+	    using namespace SpaceA; 把整个命名空间引入所在作用域, 但一般不提倡,由于可能不同空间有同名成员
+	    using SpaceA::member; 同样在继承类里可以引入基类的功能(using Base::func;)
+ 		
+	(b) 给类型起别名(替代了typedef的功能)
+	    using uint = unsigned int;               (typedef unsigned int uint;)
+	    using cout = std::cout; 
+
+	     
+
 
 	
