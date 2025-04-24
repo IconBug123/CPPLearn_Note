@@ -204,7 +204,7 @@ new 动态对象 		| new 时调用 			| delete 时调用
 9 运算符重载operator
 	<data_type> operator符号(arguments) {......}  根据需要设定返回类型和形参类型
 	
-	类内定义：*this对象→符号→参数  （只有一个参数）    符号→*this (没有参数)
+	类内定义：*this对象→符号→参数  （只有一个参数）    符号→*this (没有参数)    仿函数的参数不固定
 	类外定义：first参数→符号→second参数	(两个参数)      符号→*this (一个参数)    一般通过friend函数访问类内部成员  
 
 	ostream& operator<<(ostream& os, const Person& p) {
