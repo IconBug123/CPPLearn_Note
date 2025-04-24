@@ -217,9 +217,10 @@ new 动态对象 		| new 时调用 			| delete 时调用
 
 
 10 常用的关键字(用来修饰函数)
-	常用的关键字default noexcept delete final override explicit....
-
-
+	常用的关键字default noexcept delete 
+	=default 使用默认的情况 (也可以有其他重载函数)
+	=delete 禁止使用某种情况
+	noexcept 不抛出异常, (一般是移动构造和移动赋值函数)
 
 
 
