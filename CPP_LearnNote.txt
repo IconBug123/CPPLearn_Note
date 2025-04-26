@@ -22,6 +22,8 @@ C++结构体里可以有函数
 	匿名空间namespace{......}  只能在所在区域使用里面的内容, 如同static
         命名空间里函数或是变量如果是声明，可以在外部定义<data_type> SpaceA:: fun(arguments){......}
 	可以结合匿名空间一起使用，内部程序不暴露，只暴露接口	  
+	
+	同名的命名空间如果再次创建他们会共享内容	
 
 // mylib.h
 namespace mylib {
@@ -51,7 +53,7 @@ void mylib::publicFunction(){internalHelper();}
 	编译器会根据初始化表达式自动推导出变量类型 auto x = value;（可以结合引用）不能用于函数参数
 	for (auto x : y) x为变量名首元素，遍历有 begin() 和 end() 的 y, (标准容器、数组、自己写的类)
 	     
-
+ 
 ② 动态内存
 new / delete
 
@@ -68,10 +70,12 @@ C++11用{ }替代（ ）更安全 即new int{5};
 引用时给一个变量起别名，他们共同指向一个内存空间
 引用必须初始化，初始化后不能再令其改引到另一个变量。(一直绑定该变量)
 Tip: 作为函数的返回值(可以让返回值作为左值使用)，或是函数形参 (代替指针，从而不需要形参开辟空间进行赋值过程)
-int a = 10;
-int& b = a;   int (&arr_2)[7] = arr_1; void (*& fun_2)(arguments) = fun_1;
-不可以int& b = 10; 但可以const int& b = 10;（此处建立了 int tmp = 10; b是一个不可修改左值即引用tmp）
-int&& b =10; 是一个右值引用，引用的是10这个右值。此时b是左值可修改
+左值引用：
+	int a = 10;
+	int& b = a;   int (&arr_2)[7] = arr_1; void (*& fun_2)(arguments) = fun_1;
+右值引用：
+	不可以int& b = 10; 但可以const int& b = 10;（此处建立了 int tmp = 10; b是一个不可修改左值即引用tmp）
+	int&& b =10; 是一个右值引用，引用的是10这个右值。此时b是左值可修改
 
 
 
