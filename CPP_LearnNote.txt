@@ -11,8 +11,7 @@ C++结构体里可以有函数
 关键字default，delete noexcept......
 
 
-
-① namespace 和 using
+① 
 (1) 命名空间定义: namespace SpaceA{......}  作用域 (防止函数，变量，类的名字冲突)
     使用：SpaceA::函数或变量；
         
@@ -37,8 +36,6 @@ void mylib::publicFunction(){internalHelper();}
 或: namespace mylib{void publicFunction(){internalHelper();}}
 
 
-
-
 (2) using的使用:
 	(a) 引入名称(函数名，变量名，空间类名)到所在作用域
 	    using namespace SpaceA; 把整个命名空间引入所在作用域, 但一般不提倡,由于可能不同空间有同名成员
@@ -52,34 +49,10 @@ void mylib::publicFunction(){internalHelper();}
 (3) auto
 	编译器会根据初始化表达式自动推导出变量类型 auto x = value;（可以结合引用）不能用于函数参数
 	for (auto x : y) x为变量名首元素，遍历有 begin() 和 end() 的 y, (标准容器、数组、自己写的类)
-	     
- 
-② 动态内存
-new / delete
-
-int* ptr = new int(5); 或 int* ptr = new int; 没有初始化
-int* arr = new int[5];          5个元素的数组, (此处arr不是数组名, 只是一个连续动态首地址）
-
-delete ptr;    如果ptr = nullptr可以释放多次，但是ptr≠nullptr 则不能重复释放
-delete[]  arr;  
-
-C++11用{ }替代（ ）更安全 即new int{5};
-
-
-③ 引用
-引用时给一个变量起别名，他们共同指向一个内存空间
-引用必须初始化，初始化后不能再令其改引到另一个变量。(一直绑定该变量)
-Tip: 作为函数的返回值(可以让返回值作为左值使用)，或是函数形参 (代替指针，从而不需要形参开辟空间进行赋值过程)
-左值引用：
-	int a = 10;
-	int& b = a;   int (&arr_2)[7] = arr_1; void (*& fun_2)(arguments) = fun_1;
-右值引用：
-	不可以int& b = 10; 但可以const int& b = 10;（此处建立了 int tmp = 10; b是一个不可修改左值即引用tmp）
-	int&& b =10; 是一个右值引用，引用的是10这个右值。此时b是左值可修改
 
 
 
-④函数高级
+ ② 函数高级
   1  C++里函数可以有默认参数，默认值后面的参数都要有默认参数
       函数的声明有默认参数，函数的定义就不能有，因为二义性，因此声明和实现只能有一个有默认参数 
  
@@ -94,12 +67,37 @@ Tip: 作为函数的返回值(可以让返回值作为左值使用)，或是函�
 
   4    尾返回形式：auto (arguments)->return_data_type{......}
 
+	     
+ 
+③ 动态内存
+new / delete
+
+int* ptr = new int(5); 或 int* ptr = new int; 没有初始化
+int* arr = new int[5];          5个元素的数组, (此处arr不是数组名, 只是一个连续动态首地址）
+
+delete ptr;    如果ptr = nullptr可以释放多次，但是ptr≠nullptr 则不能重复释放
+delete[]  arr;  
+
+C++11用{ }替代（ ）更安全 即new int{5};
+
+
+④ 引用
+引用时给一个变量起别名，他们共同指向一个内存空间
+引用必须初始化，初始化后不能再令其改引到另一个变量。(一直绑定该变量)
+Tip: 作为函数的返回值(可以让返回值作为左值使用)，或是函数形参 (代替指针，从而不需要形参开辟空间进行赋值过程)
+左值引用：
+	int a = 10;
+	int& b = a;   int (&arr_2)[7] = arr_1; void (*& fun_2)(arguments) = fun_1;
+右值引用：
+	不可以int& b = 10; 但可以const int& b = 10;（此处建立了 int tmp = 10; b是一个不可修改左值即引用tmp）
+	int&& b =10; 是一个右值引用，引用的是10这个右值。此时b是左值可修改
+
+
+
 
 
 
 ⑤ 类的封装
-
-
 
 场景		 		| 构造函数执行			| 析构函数执行
 局部对象 			| 创建时调用	 		| 离开作用域时自动调用
