@@ -11,6 +11,16 @@ C++结构体里可以有函数
 关键字default，delete noexcept......
 
 
+vector<int> a{....};  { }初始化 (即：类 std::initializer_list<T>)， 同样可以operator=(initializer_list<T>的参数)，从而避免 a = {....};  {....}的隐式转换(不提倡)
+而vector<int> a={....}; 要经历一个隐式转换再调用构造函数, 如果explicit { }形式构造函数, 则该表达式不能调用了
+
+a = {.....}; 调用initializer_list 赋值函数, 此时{......}是一个initializer_list的匿名对象
+
+iterator是类里嵌套的另一个类 class A{....using iterator = class B{......}};  所以 vector<int>::iterator  
+
+
+
+
 ① 
 (1) 命名空间定义: namespace SpaceA{......}  作用域 (防止函数，变量，类的名字冲突)
     使用：SpaceA::函数或变量；
@@ -48,7 +58,9 @@ void mylib::publicFunction(){internalHelper();}
 
 (3) auto
 	编译器会根据初始化表达式自动推导出变量类型 auto x = value;（可以结合引用）不能用于函数参数
-	for (auto x : y) x为变量名首元素，遍历有 begin() 和 end() 的 y, (标准容器、数组、自己写的类)
+	
+	for (auto x : y) x为变量名首元素，遍历有 begin() 和 end() 的 y, (标准容器、数组、自己写的类)，
+	由于该方法一开始会记录这个数据的结束位置, 所以不能在遍历的时候修改数据(添加或删除)，因为会导致结束位置混乱
 
 
 
