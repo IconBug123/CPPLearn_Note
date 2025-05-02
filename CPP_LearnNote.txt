@@ -16,9 +16,7 @@ vector<int> a{....};  { }初始化 (即：类 std::initializer_list<T>)， 同�
 
 a = {.....}; 调用initializer_list 赋值函数, 此时{......}是一个initializer_list的匿名对象
 
-iterator是类里嵌套的另一个类 class A{....using iterator = class B{......}};  所以 vector<int>::iterator  
-
-
+iterator / reverse_iterator / const_iterator是类里嵌套的另一个类 class A{....using iterator = class B{......}};  所以：类 vector<int>::iterator itr(对象名)
 
 
 ① 
@@ -59,9 +57,21 @@ void mylib::publicFunction(){internalHelper();}
 (3) auto
 	编译器会根据初始化表达式自动推导出变量类型 auto x = value;（可以结合引用）不能用于函数参数
 	
-	for (auto x : y) x为变量名首元素，遍历有 begin() 和 end() 的 y, (标准容器、数组、自己写的类)，
+	for (auto x : y) x为变量名首元素的拷贝，遍历有 begin() 和 end() 的 y, (标准容器、数组、自己写的类)，
 	由于该方法一开始会记录这个数据的结束位置, 所以不能在遍历的时候修改数据(添加或删除)，因为会导致结束位置混乱
 
+
+(4) 类型转换
+	隐式类型转换:	系统自动进行. 
+
+	显示类型转换:	C语言里的是(int)3.2  C++的为下述内容：
+		使用方法：强制转换关键字<type>(express)
+		1: static_cast：用于大多数安全的转换，编译器在编译期检查合法性。
+		2: dynamic_cast：用于多态类型（含虚函数的类）的指针或引用之间转换，带类型检查。
+		3: const_cast：用于去除 const 或 volatile 限定的类型（前提：原本不是常量才安全）
+		4: reinterpret_cast：几乎不进行任何类型检查，直接按内存解释，适用于底层操作、指针强转。
+		
+	
 
 
  ② 函数高级
