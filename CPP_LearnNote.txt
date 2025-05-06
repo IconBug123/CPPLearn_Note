@@ -18,6 +18,13 @@ a = {.....}; 调用initializer_list 赋值函数, 此时{......}是一个initial
 如果没有对应的initializer_list的赋值函数，则此时{......}先进行隐式转换成一个匿名的a类型的对象然后进行赋值操作.
 iterator / reverse_iterator / const_iterator是类里嵌套的另一个类 class A{....using iterator = class B{......}};  所以：类 vector<int>::iterator itr(对象名)
 
+对于ClassVector a = {1,2,3};而言：
+std::initializer_list<int> temp = {1, 2, 3};  隐式转换
+ClassVector a(temp);
+当使用了explicit修饰构造函数initializer后就不能用这个方法了。
+
+同样的，当a={1,2,3};如果没有相应的initializer_list的赋值函数则也是先构造一个{1,2,3}的ClassVector的匿名对象然后通过默认或自己定义的ClassVector赋值函数
+
 
 ① 
 (1) 命名空间定义: namespace SpaceA{......}  作用域 (防止函数，变量，类的名字冲突)
