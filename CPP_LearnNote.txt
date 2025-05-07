@@ -72,7 +72,7 @@ void mylib::publicFunction(){internalHelper();}
 	隐式类型转换:	系统自动进行. 
 
 	显示类型转换:	C语言里的是(int)3.2  C++的为下述内容：
-		使用方法：强制转换关键字<type>(express)
+		使用方法：强制转换关键字<类型>(变量)
 		1: static_cast：用于大多数安全的转换，编译器在编译期检查合法性。
 		2: dynamic_cast：用于多态类型（含虚函数的类）的指针或引用之间转换，带类型检查。
 		3: const_cast：用于去除 const 或 volatile 限定的类型（前提：原本不是常量才安全）
