@@ -280,12 +280,12 @@ has-it：是指类B里面有类A的对象作为成员变量, 从而可以通过B
 	is-a 和 has-a关系
 	嵌套关系彼此相互独立只是作用域划分的关系
 
-（2）子类转换为父类时会丢失自己的数据只保留父类的数据，因为Base b = d (子类对象) 这个过程里是调用的Base的拷贝构造Base(const Base&);
+	子类转换为父类时会丢失自己的数据只保留父类的数据，因为Base b = d (子类对象) 这个过程里是调用的Base的拷贝构造Base(const Base&);
 	此时隐式转换把子类转换为基类 (切片slicing) 可以用显示转换static_cast<const Base&>(d); 避免explicit的修饰 
 	同理: void Base::operator=(b); 也是如此, 如果Base:: operator=(const Base& other)
 
 
-（3）注：Derived对象创建时在子类构造里调用Base的构造，否则为Base默认构造)
+（2）注：Derived对象创建时在子类构造里调用Base的构造，否则为Base默认构造)
 	无论是继承来的父类（is-a），还是组合的成员对象（has-a），只要它们没有默认构造函数，都必须在子类构造函数的初始化列表中手动初始化。
 
 	is-a和has-a一起使用：构造函数：先Base → 再成员对象 → 最后子类对象
