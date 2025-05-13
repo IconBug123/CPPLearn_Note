@@ -199,7 +199,7 @@ has-it：是指类B里面有类A的对象作为成员变量, 从而可以通过B
 5 static成员(函数/变量)
 	类的不同对象对应的成员信息都是各自的，只有static成员是共享的
 	属于整个类，不是属于某个对象, 所有对象共享同一份数据，没有this
-	(1). 静态成员变量在类内声明，要在类外定义(初始化) (因为static变量只初始化一次, 类内不允许分配内存) 
+	(1). 静态成员变量在类内声明，要在类外定义(初始化 如：int a = 10; 定义时候不写static) (因为static变量只初始化一次, 类内不允许分配内存) 
 	      (不直接属于类的static变量可以直接初始化，如类内成员函数里的局部static变量不需要类外初始化)
 	      (Tip: static const成员变量不太一样）
 	(2). 静态成员函数只能直接访问静态成员变量 (没有具体对象,（this), 无法确定非成员变量的具体值，每个对象的成员都有各自的值)，
@@ -223,13 +223,13 @@ has-it：是指类B里面有类A的对象作为成员变量, 从而可以通过B
 
 
 7 this指针
-	指向“当前正在使用的对象地址的指针 （常在在成员函数里的使用,this == ClassName* const obj）
-	在const成员函数里是const ClassName* const 或const this
+	指向“当前正在使用的对象的指针 （常在在成员函数里的使用, ClassName* const this 只能指向当前对象不能指向其他对象）
+	在const成员函数里是const ClassName* const this  
 	
 	1 区分成员变量和函数参数名重复 this->a = a; (左a是该对象的，右a是参数)
 	2 实现链式调用（返回 *this  当前对象的引用）
 	
-	Tip: 在 const 成员函数中变成 const A*  const this（不能修改对象）
+	Tip: 在 const 成员函数中变成 const CN*  const this（不能修改对象）
 	       实现自赋值判断（如 if (this == &other)）
 	       (友元和static没有this)       
 
