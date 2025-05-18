@@ -75,7 +75,7 @@ void mylib::publicFunction(){internalHelper();}
 		使用方法：强制转换关键字<类型>(变量)
 		1: static_cast：用于大多数安全的转换，编译器在编译期检查合法性。
 		2: dynamic_cast：用于多态类型（含虚函数的类）的指针或引用之间转换，带类型检查。
-			RIIT dynamic_cast：对象指针的转换， 转换要明确原本的类型避免无法转换
+			RIIT dynamic_cast：对象指针的转换， 转换要明确原本的类型避免无法转换  基类里必须有虚函数即多态情况因为需要虚函数表指针 
 			(如Base b;里面没有子类信息所以无法转换成子类，而Base* ap = &c; ap可以动态转换为C因为ap动态类型原本就是C
 		3: const_cast：用于去除 const 或 volatile 限定的类型（前提：原本不是常量才安全）
 		4: reinterpret_cast：几乎不进行任何类型检查，指针强转（直接按内存解释）。
