@@ -34,8 +34,7 @@ ClassVector a(temp);
 	C++17里可以namespace A::B{......}
         
 	匿名空间namespace{......}  只能在所在区域使用里面的内容, 如同static
-        命名空间里函数或是变量如果是声明，可以在外部定义<data_type> SpaceA:: fun(arguments){......}
-	可以结合匿名空间一起使用，内部程序不暴露，只暴露接口	  
+        	  
 	
 	同名的命名空间如果再次创建他们会共享内容	
 
