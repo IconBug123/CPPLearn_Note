@@ -88,9 +88,7 @@ void mylib::publicFunction(){internalHelper();}
 至少一个虚函数才能启用 RTTI（运行时类型识别）机制。
 
 3. 可以用于普通继承，也可以用于虚继承
-虚继承不是必要条件；
-
-但在虚继承中，dynamic_cast 是唯一安全的方式，因为偏移量是运行时才能确定的。
+虚继承不是必要条件；但在虚继承中，dynamic_cast 是唯一安全的方式，因为偏移量是运行时才能确定的。
 
 
 
@@ -548,7 +546,12 @@ Refer to: https://blog.csdn.net/longlovefilm/article/details/80558879
 	
 	1 Note that: 普通继承(无二义性): Base* bptr = &d;    有二义性的普通继承: A* ap = static_cast<B*>(&d);明确中间过渡的路径 
 			  虚继承: Base* bptr = dynamic<Base*>(&d);
-	
+			
+		Base& ref = d;        // ✅ 只是引用，不复制，不切片
+		Base* ptr = &d;       // ✅ 指针同理，不切片
+		const Base& cref = d; // ✅ 只是引用，不复制，不切片
+		Base b = d;  // ← 这里发生了“切片”
+		它只是引用了 d 对象在内存中的真实地址，不会构造新的对象，也不会复制，所以 子类对象仍然完整存在，这叫做：多态绑定
 	
 	(1) 	  	  
 	Note that: 
