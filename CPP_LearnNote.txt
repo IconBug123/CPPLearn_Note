@@ -689,7 +689,54 @@ class C size(16):
 
 
 --------------------------------------------------------------
-模版Template
+1< 模版Template的基础>
+
+① 模版的格式
+函数模版的格式:
+template<typename T1, typename T2, ......>      表示声明一个模板, T是类型参数  typename表示后面的T是一个数据类型
+T fun(T_arguments){......}                     一个泛型函数, 接受任意类型的参数只要fun符合逻辑
+使用方法: fun<data_type>(......);
 
 
-		
+类模版的格式:
+template<typename T1, typename T2, ......>
+class CN {
+    成员关于T1, T2, ...的类型;
+};
+类外定义的成员fun
+template<typename T1, typename T2, ......>
+Ti CN<T1, T2, ...>:: fun(T_arguments){......}
+类对象
+CN<data_type> obj;
+
+
+Ti可以有默认参数, 如: template<typename T1, typename T2 = int, ......> 后面的都要有默认参数
+关键字typename和class可以互换 (当T里有嵌套的依赖数据类型名时要用typename修饰)
+
+*****Note that: typename T::type_value  表示type_value是T模版参数(类)里嵌套的数据类型, 如果没有typename则可能是T里的一个成员变量（C++会把T::type_value当作static成员变量）除非编译器知道T::type_value是一个类型(非依赖名)	
+
+template<typename U>
+struct MyBox {
+    using data_type = U;
+};
+
+template<typename T>
+void func() {
+    typename T::data_type val;  // ✅ 合法，只要 T 有 data_type
+}
+
+func<MyVector<double>>();  // 则 T = MyVector<double>
+
+
+② 非类型模版参数
+模板参数不一定非得是“类型”（typename T），它也可以是一个常量值！
+
+template<typename T, data_type par>
+T func(argument){......}
+使用方法: func<int, val>(......);   val必须是编译期间已知的值
+	
+在使用func时候<>里的非类型模版参数必须是编译时就已知的:
+	整型常量（<>里直接赋值的int, char, bool，const int或constexpr int变量）除非是C++20才有其他类型的常量
+	指针常量（如函数指针或全局变量指针）
+	枚举值
+Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
