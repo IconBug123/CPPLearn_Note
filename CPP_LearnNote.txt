@@ -744,15 +744,17 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
 
 
 总结:
-1   template<类型参数, 非类型参数>
-类型模版参数: typename T  
-(T是数据类型, 也可以是类(类里面有嵌套的数据类型typename T::data_type))
+1模版参数的设置   
+	template<类型参数, 非类型参数>
+		
+	① 类型模版参数: typename T  
+	    (T是数据类型, 也可以是类(类里面有嵌套的数据类型typename T::data_type))
 
-非类型参数: data_type par  
-(此处data_type可以是模版里的非类型模版参数T, 如: template<typename T, T par>)
-(非类型模版参数必须是编译时就已知的 (整型常量, 指针常量, 枚举值, ...))
+	② 非类型参数: data_type par  
+	    (此处data_type可以是模版里的非类型模版参数T, 如: template<typename T, T par>)
+	    (非类型模版参数在实例化时必须在编译阶段就是已知的, 如: 整型常量, 指针常量, 枚举值, ...)
 
-Note that: 参数可以有默认值, 但默认值后面的参数都要有默认值
+	Note that: 参数可以有默认值, 但默认值后面的参数都要有默认值
 
 
 
