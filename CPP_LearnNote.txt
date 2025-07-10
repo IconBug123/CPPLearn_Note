@@ -732,7 +732,7 @@ func<MyVector<double>>();  // 则 T = MyVector<double>
 模板参数不一定非得是“类型”（typename T），它也可以是一个常量值！
 
 template<typename T, data_type par>
-T func(argument){......}
+T func<具体参数,...>(argument){......}
 使用方法: func<int, val>(......);   val必须是编译期间已知的值
 	
 在使用func时候<>里的非类型模版参数必须是编译时就已知的:
@@ -740,3 +740,52 @@ T func(argument){......}
 	指针常量（如函数指针或全局变量指针）
 	枚举值
 Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
+
+
+
+总结:
+1   template<类型参数, 非类型参数>
+类型模版参数: typename T  
+(T是数据类型, 也可以是类(类里面有嵌套的数据类型typename T::data_type))
+
+非类型参数: data_type par  
+(此处data_type可以是模版里的非类型模版参数T, 如: template<typename T, T par>)
+(非类型模版参数必须是编译时就已知的 (整型常量, 指针常量, 枚举值, ...))
+
+Note that: 参数可以有默认值, 但默认值后面的参数都要有默认值
+
+
+
+2 func和class模版
+① func模版
+	template<typename T, data_type par>
+	T func(arguments of T, ...){关于 T 和 par......}     
+
+	func<Real_T, Real_par>(Real_arguments);
+
+	(Note that: func的返回类型可以是明确的数据类型也可以是类型模版参数)
+
+
+② class类模版
+	template<typename T, data_type par>
+	class CN{
+    	    关于 T 和 par......
+	};
+	
+	类外定义的成员func
+	template<typename T, data_type par>
+	T CN<T, par>:: func(arguments of T){关于T和par......}  
+	
+	class<Real_T, Real_par> obj();
+
+
+
+
+
+
+
+
+
+
+
+
