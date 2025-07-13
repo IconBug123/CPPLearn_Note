@@ -745,49 +745,116 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
 
 总结:
 1模版参数的设置   
-	template<类型参数, 非类型参数>
+	template<typename T, data_type par, template<typename> class BT>
 		
-	① 类型模版参数: typename T  
-	    (T是数据类型, 也可以是类(类里面有嵌套的数据类型typename T::data_type))
-
-	② 非类型参数: data_type par  
-	    (此处data_type可以是模版里的非类型模版参数T, 如: template<typename T, T par>)
+	① 类型模版参数: typename T    (T是数据类型, 也可以是类)
+	   
+	② 非类型模版参数: data_type par  
 	    (非类型模版参数在实例化时必须在编译阶段就是已知的, 如: 整型常量, 指针常量, 枚举值, ...)
 
-	Note that: 参数可以有默认值, 但默认值后面的参数都要有默认值
+	③ 类模版模版参数 template<typename CT1, ...> class CNT
+	    
+
+	Note that:    (1) 参数可以有默认值, 但默认值后面的参数都要有默认值
+			   (2) 非类型模版参数par的数据类型可以是类型模版参数T, 如: template<typename T, T par>)
+			   (3) typename修饰的变量是数据类型 (当依赖于模版时, 即模板上下文中), template修饰的变量是一个模版 (当依赖于模版时, 即模板上下文中) 非依赖
+				上下文中不能使用 typename 和 template
+			   
+	 	(类或模版类里嵌套数据类型: typename CN::data_type 从而区分这个不是一个成员, 而是数据类型)
+	    	(类或模版类里嵌套的模板类: typename CN_A<...>::template CN_B<...> B_obj, 如果是实例化, 则不能用template和typename, 
+		 如果不是模版, 则不使用template)
 
 
 
 2 func和class模版
 ① func模版
-	template<typename T, data_type par>
-	T func(arguments of T, ...){关于 T 和 par......}     
+	template<typename T, data_type par, template<typename> class BT>
+	RT func(arguments of T, ...){关于 T 和 par......}     
 
-	func<Real_T, Real_par>(Real_arguments);
+	func<Real_Parameters>(Real_arguments);
 
-	(Note that: func的返回类型可以是明确的数据类型也可以是类型模版参数)
+	(Note that: func的返回类型可以是明确的数据类型也可以是模版参数)
 
 
 ② class类模版
-	template<typename T, data_type par>
+	template<typename T, data_type par, template<typename> class BT>
 	class CN{
     	    关于 T 和 par......
+	    RT func(......);
+	    
+	    template<typename U, ......>
+	    RT func_T(......);
 	};
 	
 	类外定义的成员func
 	template<typename T, data_type par>
-	T CN<T, par>:: func(arguments of T){关于T和par......}  
+	RT CN<T, par>:: func(arguments of T){关于T和par......}  
 	
-	class<Real_T, Real_par> obj();
+	template<typename T, ...>
+	template<typename U, ...>
+	RT CN<T, par>:: func_T(arguments of T){关于T和par......}  
+	
+	class<Real_Parameters> obj();
+	obj.func(...);
+	obj.func<实例化参数>(...);
+------------------------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------
+类模版里嵌套类模板的使用: typename A<...>::template B<...> B_obj;
+模版里嵌套：(1) 类型，(2) 类模板
 
+当模版里嵌套类模版时候
+template<typename T>
+class A {
+public:
+    template<typename U>
+    class B {
+    public:
+        U data;
+    };
+};
 
+template<typename T>
+void func() {
+    typename A<T>::template B<int> b;  // ✅ 注意：必须加 template
+}
+此处typename A<T>::template B<int> b;  表示A<T>里的成员template B<int>是b的数据类型(该数据类型是类模版)
+在实例化使用时候: A<int>::B<double> B_obj; 可以省略typename和template
+----------------------------------------------------------------------------------------------
+例子 template<typename T, int size, template<typename> class BT>
+#include <iostream>
+using namespace std;
 
+// 模板模板参数（BT）
+template<typename U>
+class Box {
+public:
+    U value;
+};
 
+// 使用类型 + 非类型 + 模板模板参数
+template<typename T, int size, template<typename> class BT>
+class Container {
+private:
+    BT<T> array[size];  // 包含 size 个 Box<T>
+public:
+    void set(int index, const T& val) {
+        array[index].value = val;
+    }
+    void show(int index) const {
+        cout << "Value[" << index << "] = " << array[index].value << endl;
+    }
+};
 
+int main() {
+    Container<int, 3, Box> c;
+    c.set(0, 100);
+    c.set(1, 200);
+    c.set(2, 300);
 
-
-
-
-
+    c.show(0);
+    c.show(1);
+    c.show(2);
+}
+--------------------------------------------------------------------------------
 
