@@ -757,7 +757,7 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
 
 	Note that:    (1) 参数可以有默认值, 但默认值后面的参数都要有默认值
 			   (2) 非类型模版参数par的数据类型可以是类型模版参数T, 如: template<typename T, T par>)
-			   (3) typename修饰的变量是数据类型 (当依赖于模版时, 即模板上下文中), template修饰的变量是一个模版 (当依赖于模版时, 即模板上下文中) 非依赖
+			   (3) typename修饰的变量是数据类型 (当依赖于模版时, 即模板上下文中), template修饰的变量是一个模版 (当依赖于模版时, 即模版上下文中) 非依赖
 				上下文中不能使用 typename 和 template
 			   
 	 	(类或模版类里嵌套数据类型: typename CN::data_type 从而区分这个不是一个成员, 而是数据类型)
