@@ -750,7 +750,7 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
 	① 类型模版参数: typename T    (T是数据类型, 也可以是类)
 	   
 	② 非类型模版参数: data_type par  
-	    (非类型模版参数在实例化时必须在编译阶段就是已知的, 如: 整型常量, 指针常量, 枚举值, ...)
+	    (非类型模版参数在实例化时必须在编译阶段就是已知的, 如: 整型常量(int, char, bool, enum), 指针常量(函数指针, 对象指针, nullptr), ...)
 
 	③ 类模版模版参数 template<typename CT1, ...> class CNT
 	    
