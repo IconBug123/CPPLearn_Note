@@ -783,7 +783,7 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
 	类模板定义
 	template<typename T, data_type par, template<typename> class BT>
 	class CN{
-	    RT func(......); 类内的普通成员函数	
+	    RT func(......); 类内的普通成员func	
 	    
 	    template<typename U, ......> 类内定义的成员函数模版
 	    RT func_T(......);
@@ -791,19 +791,20 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
             friend void func<>(CN<T, par, BT> obj);  类的友元模版(要在类模板的前面定义)
 	};
 	
-	类外定义的成员func
-	template<typename T, data_type par>
+	类外定义的普通成员func
+	template<typename T, data_type par, template<typename> class BT>
 	RT CN<T, par>:: func(arguments of T){关于T和par......}  
 	
-	template<typename T, ...>
+	类外定义的成员func模版
+	template<typename T, data_type par, template<typename> class BT>
 	template<typename U, ...>
 	RT CN<T, par>:: func_T(arguments of T){关于T和par......}  
 	
-	友元func类外实现
-	template<typename T, data_type par, template<typename> class BT>
-	class CN;  ☆☆在类之前声明
-	template<typename T, data_type par, template<typename> class BT>
-	void func(CN<T, par, BT> obj){......} 或是声明 void func(CN<T, par, BT> obj); 然后在类之后定义
+	友元func类外实现  
+	template<typename T, data_type par, template<typename> class BT>   ☆☆类模板声明在类模版定以前
+	class CN; 
+	template<typename T, data_type par, template<typename> class BT>  
+	void func(CN<T, par, BT> obj){......} 或是声明 void func(CN<T, par, BT> obj);  友元声明, 然后在类之后定义
 
 	使用过程: 
 	class<Real_Parameters> obj();
@@ -815,7 +816,7 @@ Note that:
    (1) 调用优先级: 同名func或类 > 模版  (如果模版能更好的匹配则优先调用模版) 
    (2) 模版分文件写时, 调用模版的文件要#include<template.cpp>而不是template.h因为模版是编译期间定义的, 或者把模版都写到.hpp文件里(表示
 	这个文件里是模版) 模版在头文件里被多个文件调用不会出现重复定义现象 (函数模版也可以用inline)
-
+   (3) 实例化模版template MODEL<具体参数>; 然后再其他.cpp文件里extern template MODEL<具体参数>从而减少使用模版时的实例化次数
 ------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------
