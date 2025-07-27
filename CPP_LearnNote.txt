@@ -752,17 +752,18 @@ Note that: 不能是变量 (如int a = 10; fun<int, a>❌)
 	② 非类型模版参数: data_type par  
 	    (非类型模版参数在实例化时必须在编译阶段就是已知的, 如: 整型常量(int, char, bool, enum), 指针常量(函数指针, 对象指针, nullptr), ...)
 
-	③ 类模版模版参数 template<typename CT1, ...> class CNT
+	③ 类模版模版参数 template<typename CT1, ...> class CNT    
+	    (实例化时不能有<参数>. 如果不是类模板模板参数而是用类模版作为类型模版参数, 则CNT<参数>)
 	    
 
 	Note that:    (1) 参数可以有默认值, 但默认值后面的参数都要有默认值
 			    (2) 非类型模版参数par的数据类型可以是类型模版参数T, 如: template<typename T, T par>)
-			    (3) typename修饰的变量是数据类型 (当依赖于模版时, 即模板上下文中), template修饰的变量是一个模版 (当依赖于模版时, 即模版上下文中) 非依赖
-				上下文中不能使用 typename 和 template
+			    (3) typename修饰的变量是数据类型 (当依赖于模版时, 即模板上下文中), template修饰的变量是一个模版 (当依赖于模版时, 即模版上下文中) 
+				 在非依赖上下文里不能使用 typename 和 template
 			 
 	 	(类或模版类里嵌套数据类型: typename CN::data_type 从而区分这个不是一个成员, 而是数据类型)
 	    	(类或模版类里嵌套的模板类: typename CN_A<...>::template CN_B<...> B_obj, 如果是实例化, 则不能用template和typename, 
-		 如果不是模版, 则不使用template)
+		 如果不是模版, 则不使用template) 
 
 
 
@@ -839,7 +840,7 @@ void func() {
     typename A<T>::template B<int> b;  // ✅ 注意：必须加 template
 }
 此处typename A<T>::template B<int> b;  表示A<T>里的成员template B<int>是b的数据类型(该数据类型是类模版)
-在实例化使用时候: A<int>::B<double> B_obj; 可以省略typename和template
+在实例化使用时候: A<int>::B<double> B_obj; 不能用typename和template
 ----------------------------------------------------------------------------------------------
 例子 template<typename T, int size, template<typename> class BT>
 #include <iostream>
@@ -925,8 +926,35 @@ int main() {
 }
 
 
-4 模版参数包(了解)
+4 模版参数包(了解) 可变参数模版
+	
+		X... args 表示数据形式是X的参数包args (args里是X类型的各种参数) X也可以是一个数据类型包(里面是各种数据类型)
+	        如:
+	            template<typename... T>  typename...表示 T 是一包类型模版参数
+	            void func(T... args){......}      T... 表示 args 是一包形参   sizeof...(args)表示形参的个数  sizeof...(T)表示类型模版参数的个数
+ 
+
+	(1) 可变参数函数模版
+		void func(){
+			.......   递归结束
+		}
+		template<typename T, typename... U>		一个类型模版参数, 和一包模版参数的形式最适合参数包展开
+		void func(T& first_arg, U&... other_args){
+			std::cout<<first_arg<<std::endl;
+			func(other_args...);     此处other_args就是一个形参包
+		}  
 
 
+	(2) 可变参数类模板
+		(a) 继承递归展开:
+		template<typename... Args> class TCN{};
+		template<> class TCN<>{......}; 没有参数的特化类模板
+		template<typename FirstArg, typename... Args>
+		class TCN<FirstArgs, Args...>: private TCN<Args...>{.....};   反向递归
+		
+		(b) 组合递归展开
 
+	
+	(3)元组展开
+	tuple
 
