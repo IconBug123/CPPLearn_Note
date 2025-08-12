@@ -1186,8 +1186,9 @@ sort, unique
 
 
 
+3 deque
 
-
+deque的数据结构：是分段连续存储
 
 
 
