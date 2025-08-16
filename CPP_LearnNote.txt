@@ -1415,6 +1415,11 @@ container_<data_type> :: iterator it = container. iteratorFun(); 返回值是迭
 | `const_reverse_iterator`| 只读反向迭代器    		| 所有容器                         |
 
 
+迭代器类型:
+1 普通迭代器: 根据位置遍历容器里的元素
+2  插入迭代器: 遍历时向容器插入元素 
+3 流迭代器: 把输入流当作容器遍历, 把输出流当作容器写入
+
 不同的容器的迭代器支持的操作形式也不同, 指针也被视为一种迭代器
 
 | 容器                                               | 迭代器操作形式 |
@@ -1444,19 +1449,215 @@ container_<data_type> :: iterator it = container. iteratorFun(); 返回值是迭
 
 
 
+总结:
+1
+对容器来说: 迭代器是访问内部元素的唯一通用方式 (不暴露底层结构)
+对算法来说: 迭代器提供了统一接口, 不用关心容器类型
+
+container<data_type>::iterator itr = Real_Container.FunIter(); 返回值是迭代器的容器成员函数
+(Real_Container是实例化的容器对象)
+
+2 
+不同的容器的迭代器支持的操作形式也不同 (指针也被视为一种迭代器)
+vector, deque, array 随机访问
+list, set, map, multiset, multimap, 双向访问
+forward_list, unordered_* 向后访问
+
+3 
+迭代器失效指的是容器结构发生变化后, 原有迭代器不再指向原来的元素
+由于扩容, 插入新元素导致后面元素位置变化的,元素被删除, Hash Table重建, ... 等原因
+
 
 
 
 algorithm总结:
+算法不依赖容器在, 只依赖迭代器类型, 迭代器类型决定了能用哪些算法
 
+1 非修改性算法(只读取不改元素)
+for_each 
+for_each(1st_iter, last_iter, func)       可调用对象(函数, 函数对象, lambda) 遍历区间 [1st_iter, last_iter)
+(可以在通过func显式修改元素)
+
+find
+auto it = find(1st_iter, last_iter, value);  要查找的值需要支持 == 比较
+在区间[1st_iter, last_iter)内查找第一个等于给定值的元素。如果找到, 则返回指向该元素的迭代器; 如果没找到, 返回 last_iter
+
+find_if：根据条件查找第一个匹配的元素
+find_if_not：查找第一个不匹配条件的元素
+
+for_each, find, count, equal, mismatch
+2 修改性算法(会改容器元素)
+copy, fill, replace, remove, transform
+3 排序与相关算法
+sort, stable_sort, partial_sort, nth_element
+4 集合与数值算法
+set_union, set_intersection, accumulate, inner_product
 
 
 
 adaptor总结:
 
+| 类别         | 作用                 | 典型例子                                                                       |
+| ---------- | ------------------ | -------------------------------------------------------------------------- |
+| **容器适配器**  | 改变底层容器接口，变成特殊用途的容器 | `stack`、`queue`、`priority_queue`                                           |
+| **迭代器适配器** | 改变迭代器的行为           | `reverse_iterator`、`insert_iterator`、`istream_iterator`、`ostream_iterator` |
+| **函数适配器**  | 改变函数对象或普通函数的行为     | `std::bind`、`std::function`、`std::not_fn`、`mem_fn`                         |
+
+
+1-容器适配器: 改变底层容器接口, 变成特殊用途的容器
+① stack (后进先出)
+默认用deque作为底层容器, 也可以用vector或list作为底层实现 (底层容器必须支持push_back, pop_back, back, empty, size)
+不能直接遍历元素
+
+使用场景:
+  括号匹配
+    深度优先搜索（DFS）
+    撤销（undo）功能
+    表达式求值（后缀表达式
+
+
+
+② queue (先进先出)
+默认用deque作为底层容器, 也可以用list作为底层实现 (底层容器必须支持push_back, pop_back, back, empty, size)
+
+使用场景:
+    任务调度（按顺序处理）
+    广度优先搜索（BFS）
+    消息队列
+    打印队列
+
+
+③ priority_queue
+是一种 按优先级出队 的队列，默认是 vector<T>  (底层容器必须支持front(), push_back(), pop_back(), size(), 随机访问)
+默认是 less<T> → 大顶堆（最大值优先）内部通常用堆(heap)实现
+greater<int> → 小顶堆（最小值优先）
+
+
+使用场景
+任务调度（优先级高的任务先执行）
+Dijkstra 最短路径算法
+Top-K 问题（找前 K 个最大/最小的数）
+事件驱动模拟
+
+
+| 函数                 | 作用               |
+| ------------------ | ---------------- |
+| `push(x)`          | 入队（按优先级自动调整位置）   |
+| `pop()`            | 出队（删除最高优先级元素）    |
+| `top()`            | 访问最高优先级元素        |
+| `empty()`          | 队列是否为空           |
+| `size()`           | 队列中元素个数          |
+| `emplace(args...)` | 原地构造元素并入队（C++11） |
+
+
+
+
+
+
+2-迭代器适配器: 改变迭代器的行为
+① reverse_iterator
+    让容器从尾到头遍历和普通迭代器一样, 写入时会覆盖元素
+容器常用接口：rbegin() / rend() 
+
+
+② insert_iterator
+插入迭代器 会把写操作转换为插入操作
+
+常见的三种插入迭代器的适配器
+	back_inserter(container)
+	把元素追加到容器末尾（调用 push_back）。
+	适用于：vector、deque、list
+
+	front_inserter(container)
+	把元素插到容器开头（调用 push_front）。
+	适用于：deque、list
+
+	inserter(container, pos)
+	把元素插入到指定迭代器位置（调用 insert）。
+	适用于：所有支持 insert 的容器（如 set、map、vector、list）
+
+
+③ istream_iterator和ostream_iterator
+流迭代器适配器把 输入输出流（cin / cout / 文件流等）当作容器来处理
+
+常见的2种输入输出流迭代器的适配器
+	istream_iterator： 从输入流里逐个读元素到容器里
+	ostream_iterator：把元素写入输出流
+它们能和算法（如 copy, for_each 等）配合使用
+
+
+3-函数适配器
+把函数/仿函数转换或包装使它能适应STL算法的要求
+常见的函数适配器:
+std::bind: 把一个多参数函数绑定部分参数生成一个新的函数对象
+std::function: 将: 普通函数, 成员函数, lambda表达式, 函数对象有统一的调用接口,
+		      从而可以使不同形式的函数 (lambda, 普通函数, 成员函数, 仿函数) 都能放进一个容器里
+std::not_fn: 把一个 函数, 函数对象, lambda的结果取反 (算法需要 "条件为假" 的情况)
+mem_fn: 把类的成员函数转换为可调用的对象 (常用于STL算法里直接调用对象的成员函数, 而不用写lambda)
+	       例如: auto fn = mem_fn(&Foo::show); // 把成员函数转成可调用对象
+    			Foo f;
+			fn(f, 42);  // 调用 f.show(42)  如同仿函数
+
+
 allocator总结:
 
+
+
+
 functor总结:
+functor是有仿函数的类的对象调用该仿函数, 通常使用CN()调用仿函数 (此处是CN创建的临时对象调用仿函数)
+Lambda表达式本质也是一个有仿函数的类, 通过临时对象调用仿函数
+
+STL里提供了一些常用的functor: 算数类, 比较类, 逻辑类
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Lambda表达式
+
+auto func = [capture_list] (parameter_list) -> return_type {
+    function_body
+};
+
+| -------------------------------------  | ----------------------------- |
+| [capture_list]  捕获列表                     | 定义 lambda 如何访问外部变量（值捕获、引用捕获等） |
+| (parameter_list)  参数列表      | 和普通函数参数写法一样         |
+| -> return_type  返回类型	            | 简单的返回类型可以省略由编译器自动推导                 |
+| {function_body}  函数体                    | 要执行的代码                        |
+| func  函数名字                    | 可以省略                        |
+
+
+普通的值捕获默认是 const, 要修改它们需要 mutable
+int x = 0;
+auto f = [x]() mutable {
+    x++;            //直接修改外部x; 如果x+=5; 则是lambda内部的局部变量x, 不是外部的x
+    return x;
+};
+cout << f() << endl; // 输出 1
+cout << f() << endl; // 输出 2（修改的是内部副本）
+
+
+批量捕获外部值简写 (大量使用lambda外部变量)
+[=]：按值捕获所有外部变量, 默认为const
+[&]：按引用捕获所有外部变量
+[=, &x]：默认值捕获，但 x 用引用捕获
+[&, x]：默认引用捕获，但x用值捕获
+简写只会捕获 lambda 里实际用到的变量, 避免捕获的值悬空(Lambda运行时外部值已不存在)
+
+
 
 
 
