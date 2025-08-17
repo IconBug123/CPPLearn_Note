@@ -1532,6 +1532,16 @@ cout << f() << endl; // 输出 2（修改的是内部副本）
 简写只会捕获 lambda 里实际用到的变量, 避免捕获的值悬空(Lambda运行时外部值已不存在)
 
 
+2. 可调用对象的几种类型
+类型	示例	说明
+普通函数	int add(int a, int b);	直接调用 add(1,2)
+函数指针	int (*pf)(int,int) = add;	调用 pf(1,2)
+仿函数（函数对象）	struct F{ int operator()(int x){ return x+1; } }; F f; f(5);	类里重载 operator()
+lambda 表达式	[](int x){ return x+1; }(5);	编译器生成匿名仿函数类并实例化
+std::function 包装器	std::function<int(int,int)> f = add; f(1,2);	一种类型安全的“万能可调用对象”包装器
+bind 生成的对象	auto f = std::bind(add, 10, _1); f(5);	bind 返回的是函数对象
+
+
 
 
 
