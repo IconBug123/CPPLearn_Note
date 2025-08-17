@@ -1469,13 +1469,12 @@ forward_list, unordered_* 向后访问
 
 
 
-
 algorithm总结:
 算法不依赖容器在, 只依赖迭代器类型, 迭代器类型决定了能用哪些算法
 
 1 非修改性算法(只读取不改元素)
 for_each 
-for_each(1st_iter, last_iter, func)       可调用对象(函数, 函数对象, lambda) 遍历区间 [1st_iter, last_iter)
+for_each(1st_iter, last_iter, func)       可调用函数对象(普通函数, 函数对象, lambda) 遍历区间 [1st_iter, last_iter)
 (可以在通过func显式修改元素)
 
 find
@@ -1492,6 +1491,17 @@ copy, fill, replace, remove, transform
 sort, stable_sort, partial_sort, nth_element
 4 集合与数值算法
 set_union, set_intersection, accumulate, inner_product
+
+
+
+
+functor总结:
+functor是有仿函数的类的对象调用该仿函数, 通常使用CN()调用仿函数 (此处是CN创建的临时对象调用仿函数)
+Lambda表达式本质也是一个有仿函数的类, 通过临时对象调用仿函数
+STL里很多功能是通过对象, 因此对象可以直接作为函数对象, 而成员函数要通过bind/mem_fn包装转换
+STL里提供了一些常用的functor: 算数类, 比较类, 逻辑类
+
+
 
 
 
@@ -1586,29 +1596,30 @@ Top-K 问题（找前 K 个最大/最小的数）
 它们能和算法（如 copy, for_each 等）配合使用
 
 
+
 3-函数适配器
 把函数/仿函数转换或包装使它能适应STL算法的要求
 常见的函数适配器:
-std::bind: 把一个多参数函数绑定部分参数生成一个新的函数对象
-std::function: 将: 普通函数, 成员函数, lambda表达式, 函数对象有统一的调用接口,
+std::bind: 把一个多参数: 普通函数, 成员函数, 函数对象, lambda表达式绑定部分参数生成一个新的函数对象
+std::function: 将: 普通函数, 成员函数, lambda表达式, 函数对象变为有统一的调用接口的函数对象
 		      从而可以使不同形式的函数 (lambda, 普通函数, 成员函数, 仿函数) 都能放进一个容器里
 std::not_fn: 把一个 函数, 函数对象, lambda的结果取反 (算法需要 "条件为假" 的情况)
-mem_fn: 把类的成员函数转换为可调用的对象 (常用于STL算法里直接调用对象的成员函数, 而不用写lambda)
+mem_fn: 把类的成员函数转换为类似如同函数对象, 但使用时要有具体对象作为参数 (常用于STL算法里直接调用对象的成员函数, 而不用写lambda)
 	       例如: auto fn = mem_fn(&Foo::show); // 把成员函数转成可调用对象
     			Foo f;
-			fn(f, 42);  // 调用 f.show(42)  如同仿函数
+			fn(&f, 42);  // 调用 f.show(42)  如同仿函数
+		结合bind使用时候: std::bind(std::mem_fn(&Dialog::close), &dlg, other_pars);
+                                              等价于: std::bind(&Dialog::close, &dlg, other_pars);
+
 
 
 allocator总结:
 
+负责容器内存的申请与释放（new/delete 的封装）。
+默认是 std::allocator<T>，几乎所有情况下都够用。
 
 
 
-functor总结:
-functor是有仿函数的类的对象调用该仿函数, 通常使用CN()调用仿函数 (此处是CN创建的临时对象调用仿函数)
-Lambda表达式本质也是一个有仿函数的类, 通过临时对象调用仿函数
-
-STL里提供了一些常用的functor: 算数类, 比较类, 逻辑类
 
 
 
