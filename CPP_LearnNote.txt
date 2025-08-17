@@ -1501,6 +1501,36 @@ Lambda表达式本质也是一个有仿函数的类, 通过临时对象调用仿
 STL里很多功能是通过对象, 因此对象可以直接作为函数对象, 而成员函数要通过bind/mem_fn包装转换
 STL里提供了一些常用的functor: 算数类, 比较类, 逻辑类
 
+Lambda表达式
+
+auto func = [capture_list] (parameter_list) -> return_type {
+    function_body
+};
+
+| -------------------------------------  | ----------------------------- |
+| [capture_list]  捕获列表                     | 定义 lambda 如何访问外部变量（值捕获、引用捕获等） |
+| (parameter_list)  参数列表      | 和普通函数参数写法一样         |
+| -> return_type  返回类型	            | 简单的返回类型可以省略由编译器自动推导                 |
+| {function_body}  函数体                    | 要执行的代码                        |
+| func  函数名字                    | 可以省略                        |
+
+
+普通的值捕获默认是 const, 要修改它们需要 mutable
+int x = 0;
+auto f = [x]() mutable {
+    x++;            //直接修改外部x; 如果x+=5; 则是lambda内部的局部变量x, 不是外部的x
+    return x;
+};
+cout << f() << endl; // 输出 1
+cout << f() << endl; // 输出 2（修改的是内部副本）
+
+批量捕获外部值简写 (大量使用lambda外部变量)
+[=]：按值捕获所有外部变量, 默认为const
+[&]：按引用捕获所有外部变量
+[=, &x]：默认值捕获，但 x 用引用捕获
+[&, x]：默认引用捕获，但x用值捕获
+简写只会捕获 lambda 里实际用到的变量, 避免捕获的值悬空(Lambda运行时外部值已不存在)
+
 
 
 
@@ -1591,25 +1621,26 @@ Top-K 问题（找前 K 个最大/最小的数）
 流迭代器适配器把 输入输出流（cin / cout / 文件流等）当作容器来处理
 
 常见的2种输入输出流迭代器的适配器
-	istream_iterator： 从输入流里逐个读元素到容器里
-	ostream_iterator：把元素写入输出流
+	istream_iterator： 把元素从外部(cin, file)逐个读到容器里
+	ostream_iterator：把元素从容器逐个写入输出流(cout, file)
 它们能和算法（如 copy, for_each 等）配合使用
 
 
 
 3-函数适配器
-把函数/仿函数转换或包装使它能适应STL算法的要求
+把函数/仿函数转换或包装成能适应STL算法的要求
+
 常见的函数适配器:
-std::bind: 把一个多参数: 普通函数, 成员函数, 函数对象, lambda表达式绑定部分参数生成一个新的函数对象
-std::function: 将: 普通函数, 成员函数, lambda表达式, 函数对象变为有统一的调用接口的函数对象
-		      从而可以使不同形式的函数 (lambda, 普通函数, 成员函数, 仿函数) 都能放进一个容器里
-std::not_fn: 把一个 函数, 函数对象, lambda的结果取反 (算法需要 "条件为假" 的情况)
-mem_fn: 把类的成员函数转换为类似如同函数对象, 但使用时要有具体对象作为参数 (常用于STL算法里直接调用对象的成员函数, 而不用写lambda)
+std::bind: 把一个可调用对象 (普通函数, 成员函数, 函数对象, lambda表达式) 转换成一个新的函数对象
+std::function: 把一个可调用对象 (普通函数, 成员函数, 函数对象, lambda表达式) 转换成有统一调用接口的函数对象
+		     从而可以使不同形式的函数 (lambda, 普通函数, 成员函数, 仿函数) 都能放进一个容器里
+std::not_fn: 把一个可调用对象 (普通函数, 成员函数, 函数对象, lambda表达式) 转换成一个新的函数对象且返回结果逻辑取反 (算法需要 "条件为假" 的情况)
+mem_fn: 把类的成员函数转换为函数对象 (转换后的函数第一个参数是类的对象), (常用于STL算法里直接调用对象的成员函数, 而不用写lambda)
 	       例如: auto fn = mem_fn(&Foo::show); // 把成员函数转成可调用对象
     			Foo f;
 			fn(&f, 42);  // 调用 f.show(42)  如同仿函数
-		结合bind使用时候: std::bind(std::mem_fn(&Dialog::close), &dlg, other_pars);
-                                              等价于: std::bind(&Dialog::close, &dlg, other_pars);
+		结合bind使用时候: std::bind(std::mem_fn(&CN::memFunc), &obj, other_pars);
+                                            等价于: std::bind(&CN::memFunc, &obj, other_pars);
 
 
 
@@ -1637,36 +1668,6 @@ allocator总结:
 
 
 
-Lambda表达式
-
-auto func = [capture_list] (parameter_list) -> return_type {
-    function_body
-};
-
-| -------------------------------------  | ----------------------------- |
-| [capture_list]  捕获列表                     | 定义 lambda 如何访问外部变量（值捕获、引用捕获等） |
-| (parameter_list)  参数列表      | 和普通函数参数写法一样         |
-| -> return_type  返回类型	            | 简单的返回类型可以省略由编译器自动推导                 |
-| {function_body}  函数体                    | 要执行的代码                        |
-| func  函数名字                    | 可以省略                        |
-
-
-普通的值捕获默认是 const, 要修改它们需要 mutable
-int x = 0;
-auto f = [x]() mutable {
-    x++;            //直接修改外部x; 如果x+=5; 则是lambda内部的局部变量x, 不是外部的x
-    return x;
-};
-cout << f() << endl; // 输出 1
-cout << f() << endl; // 输出 2（修改的是内部副本）
-
-
-批量捕获外部值简写 (大量使用lambda外部变量)
-[=]：按值捕获所有外部变量, 默认为const
-[&]：按引用捕获所有外部变量
-[=, &x]：默认值捕获，但 x 用引用捕获
-[&, x]：默认引用捕获，但x用值捕获
-简写只会捕获 lambda 里实际用到的变量, 避免捕获的值悬空(Lambda运行时外部值已不存在)
 
 
 
